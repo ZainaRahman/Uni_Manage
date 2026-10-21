@@ -32,3 +32,31 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:8081/students/1
+
+
+###
+GET http://localhost:8081/teachers
+
+###
+GET http://localhost:8081/teachers/1
+
+###
+POST http://localhost:8081/teachers
+Content-Type: application/json
+
+{
+  "name": "Sadi Sir",
+  "email": "sadi@kuet.ac.bd"
+}
+
+###
+PUT http://localhost:8081/teachers/2
+Content-Type: application/json
+
+{
+  "name": "Sadi Sir",
+  "email": "Sadi@cse.kuet"
+  }
+
+###
+DELETE http://localhost:8081/teachers/1
