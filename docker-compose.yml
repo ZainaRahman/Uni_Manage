@@ -1,0 +1,22 @@
+services:
+  db:
+    container_name: postgres-uni_manage
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: universitymanage
+      POSTGRES_PASSWORD: kuetcse
+      PGDATA: /data/postgres
+    volumes:
+      - db:/data/postgres
+    ports:
+      - "5332:5432"
+    networks:
+      - db
+    restart: unless-stopped
+
+networks:
+  db:
+    driver: bridge
+
+volumes:
+  db:

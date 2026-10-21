@@ -1,0 +1,34 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+###
+GET http://localhost:8081/students
+
+###
+GET http://localhost:8081/students/1
+
+###
+POST http://localhost:8081/students
+Content-Type: application/json
+
+{
+  "name": "Suhita Islam Aurthi",
+  "roll": "2207052"
+}
+
+
+
+
+###
+PUT http://localhost:8081/students/2
+Content-Type: application/json
+
+{
+  "name": "Suhita Islam ya",
+  "roll": "2207052"
+}
+
+
+###
+DELETE http://localhost:8081/students/1
