@@ -60,3 +60,32 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:8081/teachers/1
+
+###
+GET http://localhost:8081/admins
+
+###
+GET http://localhost:8081/admins/1
+
+###
+POST http://localhost:8081/admins
+Content-Type: application/json
+
+{
+  "username": "Sadi Sir",
+  "password": "SadiAdmin123",
+    "email": "admin123@gmail.com"
+}
+
+###
+PUT http://localhost:8081/admins/1
+Content-Type: application/json
+
+{
+  "username": "Sadi Sir",
+  "password": "SadiAdmin123",
+    "email": "Admin@gmail.com"
+}
+
+###
+DELETE http://localhost:8081/admins/1
