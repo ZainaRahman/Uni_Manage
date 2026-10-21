@@ -12,7 +12,6 @@ public class StudentController {
 
     private final StudentService studentService;
 
-    // Spring injects StudentService automatically
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
