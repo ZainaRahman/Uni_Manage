@@ -1,15 +1,135 @@
-### GET request to example server
-GET https://examples.http-client.intellij.net/get
-    ?generated-in=IntelliJ IDEA
+### ================================================================
+### All endpoints now need login. REST requests use HTTP Basic auth:
+###   Authorization: Basic <username> <password>
+### Default admin (from application.properties): admin / admin123
+### Run the requests top to bottom: the admin first creates a
+### teacher and a student, then each of them tests their own access.
+### Browser login: http://localhost:8081/login   logout: /logout
+### ================================================================
+
+
+### ---------- ADMIN: can manage everything ----------
+
+### Admin creates a teacher (with login credentials)
+POST http://localhost:8081/teachers
+Authorization: Basic admin admin123
+Content-Type: application/json
+
+{
+  "name": "Sadi Sir",
+  "email": "sadi@kuet.ac.bd",
+  "username": "sadi",
+  "password": "teacher123"
+}
+
+### Admin creates a student (with login credentials)
+POST http://localhost:8081/students
+Authorization: Basic admin admin123
+Content-Type: application/json
+
+{
+  "name": "Suhita Islam Aurthi",
+  "roll": "2207052",
+  "username": "suhita",
+  "password": "student123"
+}
+
+### Admin creates another admin
+POST http://localhost:8081/admins
+Authorization: Basic admin admin123
+Content-Type: application/json
+
+{
+  "username": "admin2",
+  "password": "SadiAdmin123",
+  "email": "admin123@gmail.com"
+}
+
+### Admin lists everything (passwords are NOT returned)
+GET http://localhost:8081/admins
+Authorization: Basic admin admin123
+
+###
+GET http://localhost:8081/teachers
+Authorization: Basic admin admin123
 
 ###
 GET http://localhost:8081/students
+Authorization: Basic admin admin123
 
 ###
+GET http://localhost:8081/admins/1
+Authorization: Basic admin admin123
+
+###
+PUT http://localhost:8081/admins/2
+Authorization: Basic admin admin123
+Content-Type: application/json
+
+{
+  "username": "admin2",
+  "email": "Admin@gmail.com"
+}
+
+###
+DELETE http://localhost:8081/admins/2
+Authorization: Basic admin admin123
+
+
+### ---------- TEACHER: can manage teachers only ----------
+
+### Teacher -> teachers : 200 OK
+GET http://localhost:8081/teachers
+Authorization: Basic sadi teacher123
+
+### Teacher -> teachers by id : 200 OK
+GET http://localhost:8081/teachers/1
+Authorization: Basic sadi teacher123
+
+### Teacher creates a teacher : 200 OK
+POST http://localhost:8081/teachers
+Authorization: Basic sadi teacher123
+Content-Type: application/json
+
+{
+  "name": "Another Teacher",
+  "email": "another@cse.kuet.ac.bd",
+  "username": "teacher2",
+  "password": "teacher456"
+}
+
+### Teacher updates a teacher (password optional on update) : 200 OK
+PUT http://localhost:8081/teachers/1
+Authorization: Basic sadi teacher123
+Content-Type: application/json
+
+{
+  "name": "Sadi Sir",
+  "email": "Sadi@cse.kuet"
+}
+
+### Teacher -> students : 403 Forbidden
+GET http://localhost:8081/students
+Authorization: Basic sadi teacher123
+
+### Teacher -> admins : 403 Forbidden
+GET http://localhost:8081/admins
+Authorization: Basic sadi teacher123
+
+
+### ---------- STUDENT: can manage students only ----------
+
+### Student -> students : 200 OK
+GET http://localhost:8081/students
+Authorization: Basic suhita student123
+
+### Student -> student by id : 200 OK
 GET http://localhost:8081/students/1
+Authorization: Basic suhita student123
 
-###
-POST http://localhost:8081/students
+### Student updates a student : 200 OK
+PUT http://localhost:8081/students/1
+Authorization: Basic suhita student123
 Content-Type: application/json
 
 {
@@ -17,75 +137,38 @@ Content-Type: application/json
   "roll": "2207052"
 }
 
-
-
-
-###
-PUT http://localhost:8081/students/2
-Content-Type: application/json
-
-{
-  "name": "Suhita Islam ya",
-  "roll": "2207052"
-}
-
-
-###
-DELETE http://localhost:8081/students/1
-
-
-###
+### Student -> teachers : 403 Forbidden
 GET http://localhost:8081/teachers
+Authorization: Basic suhita student123
 
-###
-GET http://localhost:8081/teachers/1
-
-###
-POST http://localhost:8081/teachers
-Content-Type: application/json
-
-{
-  "name": "Sadi Sir",
-  "email": "sadi@kuet.ac.bd"
-}
-
-###
-PUT http://localhost:8081/teachers/2
-Content-Type: application/json
-
-{
-  "name": "Sadi Sir",
-  "email": "Sadi@cse.kuet"
-  }
-
-###
-DELETE http://localhost:8081/teachers/1
-
-###
+### Student -> admins : 403 Forbidden
 GET http://localhost:8081/admins
+Authorization: Basic suhita student123
 
-###
-GET http://localhost:8081/admins/1
 
-###
-POST http://localhost:8081/admins
+### ---------- No login / wrong password ----------
+
+### No credentials : 401 Unauthorized
+GET http://localhost:8081/students
+Accept: application/json
+
+### Wrong password : 401 Unauthorized
+GET http://localhost:8081/students
+Authorization: Basic suhita wrongpass
+
+### Duplicate username : 409 Conflict
+POST http://localhost:8081/students
+Authorization: Basic admin admin123
 Content-Type: application/json
 
 {
-  "username": "Sadi Sir",
-  "password": "SadiAdmin123",
-    "email": "admin123@gmail.com"
+  "name": "Someone",
+  "roll": "2207099",
+  "username": "sadi",
+  "password": "x12345"
 }
 
-###
-PUT http://localhost:8081/admins/1
-Content-Type: application/json
 
-{
-  "username": "Sadi Sir",
-  "password": "SadiAdmin123",
-    "email": "Admin@gmail.com"
-}
-
-###
-DELETE http://localhost:8081/admins/1
+### ---------- Clean-up (admin) ----------
+DELETE http://localhost:8081/teachers/2
+Authorization: Basic admin admin123
