@@ -2,6 +2,8 @@ package com.example.uni_manage.service;
 
 import com.example.uni_manage.entity.Student;
 import com.example.uni_manage.repository.StudentRepository;
+import com.example.uni_manage.security.UsernameChecker;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,9 +12,15 @@ import java.util.List;
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UsernameChecker usernameChecker;
 
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentRepository studentRepository,
+                          PasswordEncoder passwordEncoder,
+                          UsernameChecker usernameChecker) {
         this.studentRepository = studentRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.usernameChecker = usernameChecker;
     }
 
     public List<Student> getStudents() {
@@ -27,6 +35,11 @@ public class StudentService {
     }
 
     public void insertStudent(Student student) {
+        usernameChecker.requireUserName(student.getUsername());
+        UsernameChecker.requirePassword(student.getPassword());
+
+        student.setId(null);
+        student.setPassword(passwordEncoder.encode(student.getPassword()));
         studentRepository.save(student);
     }
 
@@ -38,6 +51,16 @@ public class StudentService {
 
         existingStudent.setName(student.getName());
         existingStudent.setRoll(student.getRoll());
+
+        if (student.getUsername() != null
+                && !student.getUsername().equals(existingStudent.getUsername())) {
+            usernameChecker.requireUserName(student.getUsername());
+            existingStudent.setUsername(student.getUsername());
+        }
+
+        if (student.getPassword() != null && !student.getPassword().isBlank()) {
+            existingStudent.setPassword(passwordEncoder.encode(student.getPassword()));
+        }
 
         studentRepository.save(existingStudent);
     }

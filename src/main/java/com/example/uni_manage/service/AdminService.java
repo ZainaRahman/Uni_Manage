@@ -2,6 +2,8 @@ package com.example.uni_manage.service;
 
 import com.example.uni_manage.entity.Admin;
 import com.example.uni_manage.repository.AdminRepository;
+import com.example.uni_manage.security.UsernameChecker;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,9 +11,15 @@ import java.util.List;
 @Service
 public class AdminService {
     private final AdminRepository adminRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final UsernameChecker usernameChecker;
 
-    public AdminService(AdminRepository adminRepository) {
+    public AdminService(AdminRepository adminRepository,
+                        PasswordEncoder passwordEncoder,
+                        UsernameChecker usernameChecker) {
         this.adminRepository = adminRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.usernameChecker = usernameChecker;
     }
 
     public List<Admin>getAdmins() {
@@ -26,6 +34,11 @@ public class AdminService {
     }
 
     public void insertAdmin(Admin admin) {
+        usernameChecker.requireUserName(admin.getUsername());
+        UsernameChecker.requirePassword(admin.getPassword());
+
+        admin.setId(null);
+        admin.setPassword(passwordEncoder.encode(admin.getPassword()));
         adminRepository.save(admin);
     }
 
@@ -35,8 +48,17 @@ public class AdminService {
                         new IllegalStateException(
                                 "Admin with id " + id + " not found"));
 
-        existingAdmin.setUsername(admin.getUsername());
-        existingAdmin.setPassword(admin.getPassword());
+
+        if (admin.getUsername() != null
+                && !admin.getUsername().equals(existingAdmin.getUsername())) {
+            usernameChecker.requireUserName(admin.getUsername());
+            existingAdmin.setUsername(admin.getUsername());
+        }
+
+        if (admin.getPassword() != null && !admin.getPassword().isBlank()) {
+            existingAdmin.setPassword(passwordEncoder.encode(admin.getPassword()));
+        }
+
         existingAdmin.setEmail(admin.getEmail());
 
         adminRepository.save(existingAdmin);
