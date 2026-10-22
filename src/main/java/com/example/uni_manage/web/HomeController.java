@@ -14,7 +14,6 @@ public class HomeController {
         return "login";
     }
 
-    // Shows templates/home.html with links depending on the user's role
     @GetMapping("/")
     public String home(HttpServletRequest request, Model model) {
         model.addAttribute("username", request.getRemoteUser());
