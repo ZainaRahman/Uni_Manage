@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Students</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<a th:href="@{/}">Home</a>
+<h2>Students</h2>
+
+<p th:if="${error}" th:text="${error}" class="error"></p>
+
+<table>
+    <tr><th>ID</th><th>Name</th><th>Roll</th><th>Username</th><th>Actions</th></tr>
+    <tr th:each="s : ${students}">
+        <td th:text="${s.id}"></td>
+        <td th:text="${s.name}"></td>
+        <td th:text="${s.roll}"></td>
+        <td th:text="${s.username}"></td>
+        <td>
+            <a th:href="@{/ui/students(edit=${s.id})}">Edit</a>
+            <form th:action="@{/ui/students/delete/{id}(id=${s.id})}" method="post" style="display:inline">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+
+<h3 th:text="${student.id == null} ? 'Add Student' : 'Edit Student'"></h3>
+<form th:action="@{/ui/students/save}" th:object="${student}" method="post">
+    <input type="hidden" th:field="*{id}">
+    Name: <input th:field="*{name}"><br>
+    Roll: <input th:field="*{roll}"><br>
+    Username: <input th:field="*{username}"><br>
+    Password: <input type="password" name="password">
+    <span th:if="${student.id != null}">(leave empty to keep the old one)</span><br>
+    <button type="submit">Save</button>
+    <a th:href="@{/ui/students}">Clear</a>
+</form>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admins</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<a th:href="@{/}">Home</a>
+<h2>Admins</h2>
+
+<p th:if="${error}" th:text="${error}" class="error"></p>
+
+<table>
+    <tr><th>ID</th><th>Username</th><th>Email</th><th>Actions</th></tr>
+    <tr th:each="a : ${admins}">
+        <td th:text="${a.id}"></td>
+        <td th:text="${a.username}"></td>
+        <td th:text="${a.email}"></td>
+        <td>
+            <a th:href="@{/ui/admins(edit=${a.id})}">Edit</a>
+            <form th:action="@{/ui/admins/delete/{id}(id=${a.id})}" method="post" style="display:inline">
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+
+<h3 th:text="${admin.id == null} ? 'Add Admin' : 'Edit Admin'"></h3>
+<form th:action="@{/ui/admins/save}" th:object="${admin}" method="post">
+    <input type="hidden" th:field="*{id}">
+    Username: <input th:field="*{username}"><br>
+    Email: <input th:field="*{email}"><br>
+    Password: <input type="password" name="password">
+    <span th:if="${admin.id != null}">(leave empty to keep the old one)</span><br>
+    <button type="submit">Save</button>
+    <a th:href="@{/ui/admins}">Clear</a>
+</form>
+</body>
+</html>

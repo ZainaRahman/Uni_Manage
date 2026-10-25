@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<h2>University Management System</h2>
+<p>Logged in as <b th:text="${username}"></b></p>
+
+
+<ul>
+    <li th:if="${isAdmin}"><a th:href="@{/ui/admins}">Manage Admins</a></li>
+    <li th:if="${isAdmin or isTeacher}"><a th:href="@{/ui/teachers}">Manage Teachers</a></li>
+    <li th:if="${isAdmin or isStudent}"><a th:href="@{/ui/students}">Manage Students</a></li>
+</ul>
+
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Logout</button>
+</form>
+</body>
+</html>
