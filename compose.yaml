@@ -35,7 +35,7 @@ services:
 
 networks:
   db:
-    driver: bridge
+    driver: bridge #standard network type for containers on one computer.
 
 volumes:
   db:

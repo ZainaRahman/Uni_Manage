@@ -26,21 +26,27 @@ public class AdminPageController {
         return "admins";
     }
 
-    @PostMapping("/save")
-    public String save(@ModelAttribute Admin admin, RedirectAttributes redirect) {
+    @PostMapping
+    public String create(@ModelAttribute Admin admin, RedirectAttributes redirect) {
         try {
-            if (admin.getId() == null) {
-                adminService.insertAdmin(admin);
-            } else {
-                adminService.updateAdmin(admin.getId(), admin);
-            }
+            adminService.insertAdmin(admin);
         } catch (ResponseStatusException e) {
             redirect.addFlashAttribute("error", e.getReason());
         }
         return "redirect:/ui/admins";
     }
 
-    @PostMapping("/delete/{id}")
+    @PutMapping("/{id}")
+    public String update(@PathVariable Long id, @ModelAttribute Admin admin, RedirectAttributes redirect) {
+        try {
+            adminService.updateAdmin(id, admin);
+        } catch (ResponseStatusException e) {
+            redirect.addFlashAttribute("error", e.getReason());
+        }
+        return "redirect:/ui/admins";
+    }
+
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
         adminService.deleteAdmin(id);
         return "redirect:/ui/admins";

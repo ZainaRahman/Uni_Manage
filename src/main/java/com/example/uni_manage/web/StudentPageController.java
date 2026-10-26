@@ -20,28 +20,34 @@ public class StudentPageController {
 
 
     @GetMapping
-    public String list(@RequestParam(required = false) Long edit, Model model) {
+    public String list(@RequestParam(required = false) Long id, Model model) {
         model.addAttribute("students", studentService.getStudents());
-        model.addAttribute("student", edit == null ? new Student() : studentService.getStudentById(edit));
+        model.addAttribute("student",id == null ? new Student() : studentService.getStudentById(id));
         return "students";
     }
 
 
-    @PostMapping("/save")
-    public String save(@ModelAttribute Student student, RedirectAttributes redirect) {
+    @PostMapping
+    public String create(@ModelAttribute Student student, RedirectAttributes redirect) {
         try {
-            if (student.getId() == null) {
-                studentService.insertStudent(student);
-            } else {
-                studentService.updateStudent(student.getId(), student);
-            }
+            studentService.insertStudent(student);
         } catch (ResponseStatusException e) {
             redirect.addFlashAttribute("error", e.getReason());
         }
         return "redirect:/ui/students";
     }
 
-    @PostMapping("/delete/{id}")
+    @PutMapping("/{id}")
+    public String update(@PathVariable Long id, @ModelAttribute Student student, RedirectAttributes redirect) {
+        try {
+            studentService.updateStudent(id, student);
+        } catch (ResponseStatusException e) {
+            redirect.addFlashAttribute("error", e.getReason());
+        }
+        return "redirect:/ui/students";
+    }
+
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
         studentService.deleteStudent(id);
         return "redirect:/ui/students";

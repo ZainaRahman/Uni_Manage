@@ -20,28 +20,34 @@ public class TeacherPageController {
 
 
     @GetMapping
-    public String list(@RequestParam(required = false) Long edit, Model model) {
+    public String list(@RequestParam(required = false) Long id, Model model) {
         model.addAttribute("teachers", teacherService.getTeachers());
-        model.addAttribute("teacher", edit == null ? new Teacher() : teacherService.getTeacherById(edit));
+        model.addAttribute("teacher", id == null ? new Teacher() : teacherService.getTeacherById(id));
         return "teachers";
     }
 
 
-    @PostMapping("/save")
-    public String save(@ModelAttribute Teacher teacher, RedirectAttributes redirect) {
+    @PostMapping
+    public String create(@ModelAttribute Teacher teacher, RedirectAttributes redirect) {
         try {
-            if (teacher.getId() == null) {
-                teacherService.insertTeacher(teacher);
-            } else {
-                teacherService.updateTeacher(teacher.getId(), teacher);
-            }
+            teacherService.insertTeacher(teacher);
         } catch (ResponseStatusException e) {
             redirect.addFlashAttribute("error", e.getReason());
         }
         return "redirect:/ui/teachers";
     }
 
-    @PostMapping("/delete/{id}")
+    @PutMapping("/{id}")
+    public String update(@PathVariable Long id, @ModelAttribute Teacher teacher, RedirectAttributes redirect) {
+        try {
+            teacherService.updateTeacher(id, teacher);
+        } catch (ResponseStatusException e) {
+            redirect.addFlashAttribute("error", e.getReason());
+        }
+        return "redirect:/ui/teachers";
+    }
+
+    @DeleteMapping("/{id}")
     public String delete(@PathVariable Long id) {
         teacherService.deleteTeacher(id);
         return "redirect:/ui/teachers";

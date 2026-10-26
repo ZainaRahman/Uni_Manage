@@ -19,7 +19,7 @@
         <td th:text="${s.username}"></td>
         <td>
             <a th:href="@{/ui/students(edit=${s.id})}">Edit</a>
-            <form th:action="@{/ui/students/delete/{id}(id=${s.id})}" method="post" style="display:inline">
+            <form th:action="@{/ui/students/{id}(id=${s.id})}" th:method="delete" style="display:inline">
                 <button type="submit">Delete</button>
             </form>
         </td>
@@ -28,8 +28,8 @@
 
 
 <h3 th:text="${student.id == null} ? 'Add Student' : 'Edit Student'"></h3>
-<form th:action="@{/ui/students/save}" th:object="${student}" method="post">
-    <input type="hidden" th:field="*{id}">
+<form th:action="${student.id == null} ? @{/ui/students} : @{/ui/students/{id}(id=${student.id})}"
+      th:method="${student.id == null} ? 'post' : 'put'" th:object="${student}">
     Name: <input th:field="*{name}"><br>
     Roll: <input th:field="*{roll}"><br>
     Username: <input th:field="*{username}"><br>

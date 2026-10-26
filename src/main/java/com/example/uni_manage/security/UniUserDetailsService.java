@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-
+//Tells Spring Security how to find a user when someone logs in.
 @Service
 public class UniUserDetailsService implements UserDetailsService {
 

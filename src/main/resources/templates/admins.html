@@ -17,8 +17,8 @@
         <td th:text="${a.username}"></td>
         <td th:text="${a.email}"></td>
         <td>
-            <a th:href="@{/ui/admins(edit=${a.id})}">Edit</a>
-            <form th:action="@{/ui/admins/delete/{id}(id=${a.id})}" method="post" style="display:inline">
+            <a th:href="@{/ui/admins(id=${a.id})}">Edit</a>
+            <form th:action="@{/ui/admins/{id}(id=${a.id})}" th:method="delete" style="display:inline">
                 <button type="submit">Delete</button>
             </form>
         </td>
@@ -27,8 +27,8 @@
 
 
 <h3 th:text="${admin.id == null} ? 'Add Admin' : 'Edit Admin'"></h3>
-<form th:action="@{/ui/admins/save}" th:object="${admin}" method="post">
-    <input type="hidden" th:field="*{id}">
+<form th:action="${admin.id == null} ? @{/ui/admins} : @{/ui/admins/{id}(id=${admin.id})}"
+      th:method="${admin.id == null} ? 'post' : 'put'" th:object="${admin}">
     Username: <input th:field="*{username}"><br>
     Email: <input th:field="*{email}"><br>
     Password: <input type="password" name="password">
