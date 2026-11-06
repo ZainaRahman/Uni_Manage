@@ -15,6 +15,7 @@ class StudentRepositoryTest {
     @Autowired
     private StudentRepository underTest;
 
+
     @Test
     void itShouldCheckIfStudentexistsByUsername() {
         // given
