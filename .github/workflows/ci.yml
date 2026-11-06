@@ -1,0 +1,46 @@
+name: Uni_Manage CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    # Starts a Postgres database so the repository and integration tests can run
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: unimanage
+          POSTGRES_USER: universitymanage
+          POSTGRES_PASSWORD: kuetcse
+        ports:
+          - 5432:5432
+        # Wait until Postgres is ready before the tests start
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Run tests with Maven
+        run: mvn -B clean test
+        env:
+          # Override application.properties so Spring connects to the Postgres service above
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/unimanage
+          SPRING_DATASOURCE_USERNAME: universitymanage
+          SPRING_DATASOURCE_PASSWORD: kuetcse
