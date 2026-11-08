@@ -167,4 +167,32 @@ class StudentServiceTest {
 
         verify(studentRepository, never()).delete(any());
     }
+
+
+    @Test
+    void failing_getStudentByIdWrongMessage() {
+        // given
+        given(studentRepository.findById(1L)).willReturn(Optional.empty());
+
+        // when & then
+        assertThatThrownBy(() -> underTest.getStudentById(1L))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("Student not found");
+    }
+
+
+    @Test
+    void failing_insertStudentKeepsPlainPassword() {
+        // given
+        Student student = new Student();
+        student.setUsername("rafi");
+        student.setPassword("rafi123");
+        given(passwordEncoder.encode("rafi123")).willReturn("encodedRafi");
+
+        // when
+        underTest.insertStudent(student);
+
+        // then
+        assertThat(student.getPassword()).isEqualTo("rafi123");
+    }
 }
