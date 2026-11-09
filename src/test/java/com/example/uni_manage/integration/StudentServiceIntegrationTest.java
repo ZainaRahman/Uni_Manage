@@ -66,8 +66,8 @@ class StudentServiceIntegrationTest {
 
             // when
             studentService.updateStudent(id, changes);
-            entityManager.flush();   // send the UPDATE to Postgres now
-            entityManager.clear();   // forget cached objects, so the next read comes from the database
+            entityManager.flush();
+            entityManager.clear();
 
             // then
             Student updated = studentRepository.findById(id).orElseThrow();
