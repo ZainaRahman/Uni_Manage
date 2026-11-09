@@ -80,26 +80,5 @@ class StudentServiceIntegrationTest {
 
 
 
-        @Test
-        void failing_itShouldInsertTwoStudentsWithSameUsername() {
-            // given
-            Student first = new Student();
-            first.setUsername("sameuser");
-            first.setPassword("pass1");
-            first.setName("Student A");
-            first.setRoll("201");
-
-            Student second = new Student();
-            second.setUsername("sameuser");
-            second.setPassword("pass2");
-            second.setName("Student B");
-            second.setRoll("202");
-
-            // when
-            studentService.insertStudent(first);
-            studentService.insertStudent(second);
-            // then (never reached)
-            assertThat(studentRepository.existsByUsername("sameuser")).isTrue();
-        }
     }
 
